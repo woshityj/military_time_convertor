@@ -7,40 +7,40 @@ num2words = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', \
 
 def convert24(time):
     t = datetime.strptime(time, '%I:%M%p')
-
     return t.strftime('%H:%M')
 
-def convertText(time):
-    string = []
+def convertTimeToText(time):
+    time_string = []
     time_list = time.split(":")
     hour = time_list[0]
-    minutes_list = list(time_list[1])
-    if int(hour) < 10 and int(hour) != 00:
-      hour_list = list(time_list[0])
-      for i in range(len(hour_list)):
-          string.append(num2words[int(hour_list[i])])
-    elif int(hour) == 00:
-          string.append(num2words[int(hour)])
+    minutes = time_list[1]
+    if int(hour) < 10:
+        hour_list = list(hour)
+        for i in range(len(hour_list)):
+            time_string.append(num2words[int(hour_list[i])])
     else:
-          string.append(num2words[int(hour)])
-    if minutes_list[0] == "0" and minutes_list[1] == "0":
-          string.append("hundred hours")
+        time_string.append(convertNumberToText(hour))
+    
+    if minutes == "00":
+        time_string.append("hundred hours")
+    elif int(minutes) < 10:
+        minutes_list = list(minutes)
+        for i in range(len(minutes_list)):
+            time_string.append(num2words[int(minutes_list[i])])
+    elif int(minutes) >= 10 and int(minutes) <= 19:
+        time_string.append(num2words[int(minutes)])
+    elif int(minutes) == 20 or int(minutes) == 30 or int(minutes) == 40 or int(minutes) == 50:
+        time_string.append(num2words[int(minutes)])
     else:
-        if int(minutes_list[0]) >= 1:
-             minutes_list[0] = minutes_list[0] + "0"
-        if int(minutes_list[0]) >= 10 and int(minutes_list[0]) <= 19:
-             minutes = 0
-             for i in range(len(minutes_list)):
-                  minutes = minutes + int(minutes_list[i])
-             string.append(num2words[minutes])
-        else:
-          for i in range(len(minutes_list)):
-                if int(minutes_list[1] != "0"):
-                    string.append(num2words[int(minutes_list[i])])
-                else:
-                    string.append(num2words[int(minutes_list[0])])
-                    break
-    return (' '.join(string))
+        minutes_list = list(minutes)
+        minutes_list[0] = minutes_list[0] + "0"
+        for i in range(len(minutes_list)):
+            time_string.append(num2words[int(minutes_list[i])])
+    return (' '.join(time_string))
 
-time = convert24("7:45AM")
-print(convertText(time))
+
+def convertNumberToText(time):
+    return num2words[int(time)]
+
+time = convert24("1:33PM")
+print(convertTimeToText(time))
